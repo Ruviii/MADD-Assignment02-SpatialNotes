@@ -21,7 +21,11 @@ class AppModel {
         case open
     }
     
-    var immersiveSpaceState = ImmersiveSpaceState.closed
+    var immersiveSpaceState = ImmersiveSpaceState.closed {
+        didSet {
+            print("🔄 AppModel: immersiveSpaceState changed from \(oldValue) to \(immersiveSpaceState)")
+        }
+    }
     
     enum ImmersionStyleSelection: String, CaseIterable {
         case mixed = "Mixed"

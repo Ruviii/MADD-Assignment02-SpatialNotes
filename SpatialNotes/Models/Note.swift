@@ -22,12 +22,16 @@ enum NoteSize: String, Codable, CaseIterable {
         case .large: return 0.7
         }
     }
-    
+
     var height: Float {
         switch self {
-        case .small: return 0.2
+        // Heights adjusted to match SwiftUI view aspect ratios
+        // Small: 250×160 ratio = 1.5625, so height = 0.3/1.5625 ≈ 0.192
+        case .small: return 0.192
+        // Medium: 300×240 ratio = 1.25, so height = 0.5/1.25 = 0.4
         case .medium: return 0.4
-        case .large: return 0.6
+        // Large: 400×320 ratio = 1.25, so height = 0.7/1.25 = 0.56
+        case .large: return 0.56
         }
     }
 }

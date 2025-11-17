@@ -54,7 +54,8 @@ struct NotePanelView: View {
                 TextField("Note content", text: $editedContent, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .lineLimit(3...15)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 8)
                     .onSubmit {
                         saveEdit()
                     }
@@ -63,20 +64,24 @@ struct NotePanelView: View {
                         onUpdate()
                     }
             } else {
+                // Display mode - show note content
+                // Note: ScrollView doesn't render well in ImageRenderer, so use Text with lineLimit
                 Text(note.content.isEmpty ? "Empty note" : note.content)
                     .font(.body)
                     .foregroundColor(note.content.isEmpty ? .secondary : .primary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding(.vertical, 2)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 8)
             }
         }
-        .padding(16)
         .frame(width: widthForSize(note.size), alignment: .topLeading)
-        .frame(minHeight: minHeightForSize(note.size))
-        .fixedSize(horizontal: true, vertical: false)
+        .frame(height: contentHeightForSize(note.size))
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 24) // Extra bottom padding to prevent text clipping
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.ultraThinMaterial)
@@ -109,15 +114,21 @@ struct NotePanelView: View {
         }
     }
     
-    /// Returns the minimum height for a note based on its size
-    private func minHeightForSize(_ size: NoteSize) -> CGFloat {
+    /// Returns the content area height (without padding)
+    private func contentHeightForSize(_ size: NoteSize) -> CGFloat {
         switch size {
-        case .small: return 140
-        case .medium: return 200
-        case .large: return 280
+        case .small: return 160
+        case .medium: return 240
+        case .large: return 320
         }
     }
-    
+
+    /// Returns the maximum height for scrollable content area
+    private func maxContentHeightForSize(_ size: NoteSize) -> CGFloat {
+        // Content height - header height - header bottom padding - VStack spacing
+        return contentHeightForSize(size) - 30 - 4 - 12
+    }
+
     private func saveEdit() {
         note.content = editedContent
         isEditing = false

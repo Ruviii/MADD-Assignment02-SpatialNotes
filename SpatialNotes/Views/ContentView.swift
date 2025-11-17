@@ -70,7 +70,6 @@ struct ContentView: View {
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .ignoresSafeArea()
     }
     
     // MARK: - Private Methods
@@ -79,27 +78,31 @@ struct ContentView: View {
     /// Note: If immersive space is not open, note will be created at default position
     /// and will appear when the space is opened
     private func spawnNoteInFront() {
+        print("🎯 ContentView: spawnNoteInFront called")
+        print("   Immersive space state: \(appModel.immersiveSpaceState)")
+
         var note: Note
-        
+
         if appModel.immersiveSpaceState == .open {
             // Try to get camera position if space is open
             if let position = appModel.sceneController.cameraForward(at: 1.0) {
                 note = Note(content: "New note", position: position)
-                print("✅ Spawned note at camera position \(position)")
+                print("   ✅ Spawned note at camera position \(position)")
             } else {
                 // Camera unavailable, use default position
                 note = Note(content: "New note", position: SIMD3<Float>(0, 0, -1.0))
-                print("⚠️ Camera unavailable, spawned note at default position")
+                print("   ⚠️ Camera unavailable, spawned note at default position")
             }
         } else {
             // Space not open, create note at default position
             // It will appear when the immersive space opens
             note = Note(content: "New note", position: SIMD3<Float>(0, 0, -1.0))
-            print("ℹ️ Spawned note at default position (immersive space not open)")
+            print("   ℹ️ Spawned note at default position (immersive space not open)")
         }
-        
+
+        print("   📌 Note ID: \(note.id.uuidString.prefix(8))")
         appModel.noteStore.addNote(note)
-        print("📝 Added note to store. Total notes: \(appModel.noteStore.notes.count)")
+        print("   📝 Added note to store. Total notes: \(appModel.noteStore.notes.count)")
     }
 }
 

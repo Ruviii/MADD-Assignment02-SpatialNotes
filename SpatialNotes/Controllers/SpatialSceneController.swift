@@ -32,6 +32,16 @@ class SpatialSceneController: ObservableObject {
     /// Sets up the RealityView content
     /// Note: Content is passed directly to methods that need it rather than stored
     func setupScene(content: RealityViewContent) {
+        // Add ambient lighting to ensure entities are visible
+        let ambientLight = PointLight()
+        ambientLight.light.intensity = 10000
+        ambientLight.position = [0, 2, 0]
+
+        let lightAnchor = AnchorEntity(.world(transform: matrix_identity_float4x4))
+        lightAnchor.addChild(ambientLight)
+        content.add(lightAnchor)
+
+        print("💡 Added ambient lighting to scene")
         print("✅ Scene setup complete")
     }
     
@@ -47,7 +57,7 @@ class SpatialSceneController: ObservableObject {
         if currentCameraTransform == nil {
             // Default camera at origin looking forward (negative Z direction)
             // Create a proper transform: camera at (0, 0, 0) looking down -Z axis
-            var transform = matrix_identity_float4x4
+            let transform = matrix_identity_float4x4
             // Forward is -Z, so we want to look down negative Z
             // This means notes should spawn at (0, 0, -1.0) which is 1m in front
             currentCameraTransform = transform
@@ -107,20 +117,24 @@ class SpatialSceneController: ObservableObject {
     func createAnchor(for note: Note, at position: SIMD3<Float>, orientation: simd_quatf? = nil, in content: RealityViewContent) -> AnchorEntity? {
         // Remove existing anchor if present
         removeAnchor(for: note.id)
-        
-        // Create world anchor at specified position
-        // Build transform matrix from rotation and translation
-        let quat = orientation ?? simd_quatf(ix: 0, iy: 0, iz: 0, r: 1)
-        let rotationMatrix = simd_float4x4(quat)
-        var transform = rotationMatrix
-        transform.columns.3 = SIMD4<Float>(position.x, position.y, position.z, 1.0)
-        
-        let anchor = AnchorEntity(world: transform)
-        
+
+        // Create world anchor using matrix identity
+        let anchor = AnchorEntity(.world(transform: matrix_identity_float4x4))
         anchor.name = "NoteAnchor_\(note.id.uuidString)"
+
+        // Set position and orientation directly
+        anchor.position = position
+        if let orientation = orientation {
+            anchor.orientation = orientation
+        }
+
+        print("   🔧 Setting anchor position to \(position)")
+        print("   🔧 Anchor transform before adding: \(anchor.transform.translation)")
+
         anchorMap[note.id] = anchor
         content.add(anchor)
-        
+
+        print("   🔧 Anchor transform after adding: \(anchor.transform.translation)")
         print("✅ Created anchor for note \(note.id.uuidString.prefix(8)) at position \(position)")
         return anchor
     }

@@ -18,9 +18,11 @@ struct ToggleImmersiveSpaceButton: View {
     
     var body: some View {
         Button {
+            print("🔘 ToggleImmersiveSpaceButton: Button tapped, current state = \(appModel.immersiveSpaceState)")
             Task { @MainActor in
                 switch appModel.immersiveSpaceState {
                     case .open:
+                        print("   ➡️ Dismissing immersive space...")
                         appModel.immersiveSpaceState = .inTransition
                         await dismissImmersiveSpace()
                         // Don't set immersiveSpaceState to .closed because there
@@ -28,19 +30,26 @@ struct ToggleImmersiveSpaceButton: View {
                         // Only set .closed in ImmersiveView.onDisappear().
 
                     case .closed:
+                        print("   ➡️ Opening immersive space...")
                         appModel.immersiveSpaceState = .inTransition
-                        switch await openImmersiveSpace(id: appModel.immersiveSpaceID) {
+                        let result = await openImmersiveSpace(id: appModel.immersiveSpaceID)
+                        print("   📬 openImmersiveSpace result: \(result)")
+                        switch result {
                             case .opened:
+                                print("   ✅ Immersive space opened successfully")
                                 // Don't set immersiveSpaceState to .open because there
                                 // may be multiple paths to ImmersiveView.onAppear().
                                 // Only set .open in ImmersiveView.onAppear().
                                 break
 
-                            case .userCancelled, .error:
-                                // On error, we need to mark the immersive space
-                                // as closed because it failed to open.
-                                fallthrough
+                            case .userCancelled:
+                                print("   ⚠️ User cancelled immersive space")
+                                appModel.immersiveSpaceState = .closed
+                            case .error:
+                                print("   ❌ Error opening immersive space")
+                                appModel.immersiveSpaceState = .closed
                             @unknown default:
+                                print("   ⚠️ Unknown response opening immersive space")
                                 // On unknown response, assume space did not open.
                                 appModel.immersiveSpaceState = .closed
                         }
