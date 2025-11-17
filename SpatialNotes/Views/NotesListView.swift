@@ -1,10 +1,3 @@
-//
-//  NotesListView.swift
-//  SpatialNotes
-//
-//  Created by Sujana Dinuwara on 2025-11-17.
-//
-
 import SwiftUI
 
 /// List view for managing notes

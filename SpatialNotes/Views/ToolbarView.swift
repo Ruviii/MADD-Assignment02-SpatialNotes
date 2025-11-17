@@ -1,10 +1,3 @@
-//
-//  ToolbarView.swift
-//  SpatialNotes
-//
-//  Created by Sujana Dinuwara on 2025-11-17.
-//
-
 import SwiftUI
 
 /// Toolbar with spawn button for creating new notes

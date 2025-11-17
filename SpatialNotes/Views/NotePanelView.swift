@@ -1,10 +1,3 @@
-//
-//  NotePanelView.swift
-//  SpatialNotes
-//
-//  Created by Sujana Dinuwara on 2025-11-17.
-//
-
 import SwiftUI
 
 /// SwiftUI view for displaying a note panel in 3D space
