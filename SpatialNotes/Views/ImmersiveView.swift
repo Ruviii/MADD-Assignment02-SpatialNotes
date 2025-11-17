@@ -412,8 +412,6 @@ struct ImmersiveView: View {
             material.color = .init(texture: .init(texture))
             material.metallic = 0.0
             material.roughness = 0.1
-            // Ensure material is not transparent and properly lit
-            material.tint = .white
             print("   ✅ Material configured with texture (size: \(cgImage.width)x\(cgImage.height))")
             print("✅ createMaterial: Complete")
             return material

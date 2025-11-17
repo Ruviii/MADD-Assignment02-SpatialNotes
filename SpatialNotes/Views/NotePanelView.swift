@@ -25,13 +25,13 @@ struct NotePanelView: View {
                 // Category icon and color indicator
                 HStack(spacing: 6) {
                     Image(systemName: note.category.icon)
-                        .foregroundColor(note.category.color)
+                        .foregroundColor(.white)
                         .font(.caption)
                     
                     if note.category != .none {
                         Text(note.category.rawValue)
                             .font(.caption2)
-                            .foregroundColor(note.category.color)
+                            .foregroundColor(.white)
                     }
                 }
                 
@@ -45,7 +45,7 @@ struct NotePanelView: View {
                 } label: {
                     Image(systemName: isEditing ? "checkmark" : "pencil")
                         .font(.caption)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.white)
                 }
             }
             .padding(.bottom, 4)
@@ -68,7 +68,7 @@ struct NotePanelView: View {
                 // Note: ScrollView doesn't render well in ImageRenderer, so use Text with lineLimit
                 Text(note.content.isEmpty ? "Empty note" : note.content)
                     .font(.body)
-                    .foregroundColor(note.content.isEmpty ? .secondary : .primary)
+                    .foregroundColor(.white) // White text for visibility in 3D space
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
@@ -78,23 +78,23 @@ struct NotePanelView: View {
             }
         }
         .frame(width: widthForSize(note.size), alignment: .topLeading)
-        .frame(height: contentHeightForSize(note.size))
+        .frame(minHeight: contentHeightForSize(note.size), alignment: .topLeading)
         .padding(.horizontal, 20)
         .padding(.top, 20)
         .padding(.bottom, 24) // Extra bottom padding to prevent text clipping
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(.ultraThinMaterial)
+                .fill(Color.black.opacity(0.7)) // Dark background for white text visibility
                 .overlay {
                     // Category color accent on left edge
                     if note.category != .none {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(note.category.color.opacity(0.3))
+                            .fill(note.category.color.opacity(0.5))
                             .frame(width: 4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
         }
         .onDisappear {
             if isEditing {
