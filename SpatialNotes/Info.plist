@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Note: NSCameraUsageDescription is included for potential camera access in future features -->
+	<!-- Currently, the app accesses scene camera transforms which may not require this permission -->
+	<key>NSCameraUsageDescription</key>
+	<string>Spatial Notes needs camera access to anchor notes in your physical space.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationPreferredDefaultSceneSessionRole</key>
